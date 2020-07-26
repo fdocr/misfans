@@ -4,7 +4,11 @@ rPi experiment to automate a fan accesory to switch between ON/OFF based on temp
 
 ### Requirements
 
-A ruby runtime installed. If new to ruby I recomend [RVM](https://rvm.io/): `curl -sSL https://get.rvm.io | bash -s stable --ruby`
+A ruby runtime installed. If new to ruby my personal recommendation is [RVM](https://rvm.io/): 
+
+```
+curl -sSL https://get.rvm.io | bash -s stable --ruby
+```
 
 Also install Bundler: `gem install bundler`
 
