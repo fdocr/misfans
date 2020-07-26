@@ -24,8 +24,9 @@ Daemons.run_proc('misfans.rb') do
 
   begin
     loop do
-      temp = `vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'`.to_f
-      logger.info { "Temp: #{temp} C" }
+      measurement = `vcgencmd measure_temp`
+      temp = /temp=(?<temp>\d+\.\d+)'C/.match(measurement)[:temp].to_f
+      logger.info { "Temp: #{temp} 'C" }
 
       #  Update statei only if necessary past thresholds
       if current_status == Status::ON && temp < 55  
@@ -45,7 +46,7 @@ Daemons.run_proc('misfans.rb') do
       end
 
       total_ticks = on_ticks + off_ticks
-      if (total_ticks % (6 * 15)) == 0
+      if (total_ticks % (3 * 15)) == 0
         # Report every 10s * 6 * 15 ticks (15 minutes)
         on_percent = (on_ticks.to_f / total_ticks) * 100
         off_percent = (off_ticks.to_f / total_ticks) *  100
@@ -56,7 +57,7 @@ Daemons.run_proc('misfans.rb') do
         logger.info { "-"*15  }
       end
 
-      sleep 10
+      sleep 20
     end
   rescue Exception => e
     logger.info { "Cleaning up..." }
