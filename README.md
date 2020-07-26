@@ -18,8 +18,10 @@ Install dependencies `bundle install` and start the daemon with `ruby daemon sta
 
 Once the daemon is running you should expect the fan to be triggered/enabled by a GPIO pin if the temperature rises above 72 'C and the fans will stop when the temperature falls below 55 'C.
 
-To-Do (a lot):
- [ ] Use Daemons' argument feature for data
- [ ] Organize in a proper class & make less of a script
- [ ] Consider embedding in Docker container (ruby runtime dependency)
- [ ] Test
+__To-Do (a lot):__
+- [ ] Use Daemons' argument feature for data
+- [ ] Organize in a proper class & make less of a script
+- [ ] Consider embedding in Docker container (ruby runtime dependency)
+- [ ] Test
+
+If interested reach out with an issue or drop a PR :)
