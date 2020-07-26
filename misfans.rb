@@ -46,8 +46,8 @@ Daemons.run_proc('misfans.rb') do
       end
 
       total_ticks = on_ticks + off_ticks
-      if (total_ticks % (3 * 15)) == 0
-        # Report every 10s * 6 * 15 ticks (15 minutes)
+      if (total_ticks % 60) == 0
+        # Report every 1 hour
         on_percent = (on_ticks.to_f / total_ticks) * 100
         off_percent = (off_ticks.to_f / total_ticks) *  100
         logger.info { "-"*15  }
@@ -57,7 +57,7 @@ Daemons.run_proc('misfans.rb') do
         logger.info { "-"*15  }
       end
 
-      sleep 20
+      sleep 60 # Tick once per minute
     end
   rescue Exception => e
     logger.info { "Cleaning up..." }
