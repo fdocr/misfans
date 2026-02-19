@@ -1,6 +1,6 @@
-# misfans — Raspberry Pi fan controller (Python refactor)
+# misfans — Raspberry Pi fan controller
 
-This repository contains a small Python 3 package that runs as a systemd-friendly daemon to control a Raspberry Pi fan based on temperature.
+misfans is a small Python 3 package that runs as a systemd-friendly daemon to control a Raspberry Pi fan based on temperature.
 
 Highlights
 
