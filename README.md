@@ -26,6 +26,14 @@ Quick start
 
    sudo ./installer/install.sh
 
+   Or use the one-liner installer (downloads and runs installer):
+
+   # using curl
+   curl -sL https://raw.githubusercontent.com/fdocr/misfans/main/installer/install.sh | sudo bash
+
+   # using wget
+   wget -qO- https://raw.githubusercontent.com/fdocr/misfans/main/installer/install.sh | sudo bash
+
 4. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
 
    sudo systemctl restart misfans.service
