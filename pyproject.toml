@@ -1,8 +1,8 @@
 [project]
 name = "misfans"
 version = "0.1.0"
-description = "Raspberry Pi fan controller daemon (refactor)
-"
+description = "Raspberry Pi fan controller daemon (refactor)"
+
 [tool.poetry.dependencies]
 python = ">=3.10"
 
