@@ -9,6 +9,8 @@ ENV_FILE=/etc/misfans.env
 SERVICE_FILE=/etc/systemd/system/misfans.service
 USER_NAME=misfans
 GROUP_NAME=gpio
+INSTALL_PREFIX=/opt/misfans
+VENV_DIR="$INSTALL_PREFIX/venv"
 
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root: sudo $0"
@@ -25,6 +27,18 @@ if getent group $GROUP_NAME >/dev/null 2>&1; then
   usermod -aG $GROUP_NAME $USER_NAME || true
 fi
 
+# Create install prefix
+mkdir -p "$INSTALL_PREFIX"
+chown $USER_NAME:$USER_NAME "$INSTALL_PREFIX" || true
+
+# Create virtualenv and install package
+if [ ! -d "$VENV_DIR" ]; then
+  python3 -m venv "$VENV_DIR"
+fi
+# Upgrade pip and install
+"$VENV_DIR/bin/pip" install --upgrade pip
+"$VENV_DIR/bin/pip" install "$PWD"[all] || "$VENV_DIR/bin/pip" install -r "$PWD/requirements.txt"
+
 # Copy environment example if not present
 if [ ! -f "$ENV_FILE" ]; then
   cat > "$ENV_FILE" <<EOF
@@ -36,9 +50,11 @@ EOF
   chmod 640 "$ENV_FILE"
 fi
 
-# Install systemd unit
+# Install systemd unit (adjust ExecStart to venv python)
 SCRIPT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cp "$SCRIPT_DIR/systemd/misfans.service" "$SERVICE_FILE"
+# Substitute python path in service
+sed -i "s|ExecStart=.*|ExecStart=$VENV_DIR/bin/python -m misfans.daemon|" "$SERVICE_FILE"
 chown root:root "$SERVICE_FILE"
 chmod 644 "$SERVICE_FILE"
 
