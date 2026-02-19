@@ -1,0 +1,11 @@
+[project]
+name = "misfans"
+version = "0.1.0"
+description = "Raspberry Pi fan controller daemon (refactor)
+"
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

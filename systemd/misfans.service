@@ -1,0 +1,15 @@
+[Unit]
+Description=misfans daemon - Raspberry Pi fan controller
+After=network.target
+
+[Service]
+Type=simple
+User=misfans
+Group=gpio
+EnvironmentFile=/etc/misfans.env
+ExecStart=/usr/bin/env python3 -m misfans.daemon
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
