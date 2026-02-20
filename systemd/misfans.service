@@ -7,9 +7,16 @@ Type=simple
 User=misfans
 Group=gpio
 EnvironmentFile=/etc/misfans.env
-ExecStart=/usr/bin/env python3 -m misfans.daemon
-Restart=always
+WorkingDirectory=/opt/misfans
+ExecStart=/opt/misfans/venv/bin/python -m misfans.daemon
+Restart=on-failure
 RestartSec=5
+# Sandboxing
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectSystem=full
+ProtectHome=yes
+PrivateDevices=yes
 
 [Install]
 WantedBy=multi-user.target

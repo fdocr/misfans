@@ -1,5 +1,8 @@
 import time
 import logging
+import signal
+import sys
+from typing import Optional
 from .config import config
 from .gpio_driver import FanDriver
 from .utils import read_cpu_temp_c
@@ -9,41 +12,56 @@ logger = logging.getLogger('misfans')
 
 class FanController:
     def __init__(self):
-        self.fan = FanDriver(config.FAN_PIN)
-        self.on_temp = config.ON_TEMP
-        self.off_temp = config.OFF_TEMP
-        self.interval = config.POLL_INTERVAL
-        self.last_state = False
+        self.fan: FanDriver = FanDriver(config.FAN_PIN)
+        self.on_temp: float = config.ON_TEMP
+        self.off_temp: float = config.OFF_TEMP
+        self.interval: float = config.POLL_INTERVAL
+        self._running: bool = True
 
-    def check_once(self):
-        temp = read_cpu_temp_c()
+    def check_once(self) -> None:
+        temp: Optional[float] = read_cpu_temp_c()
         if temp is None:
             logger.warning('Could not read temperature')
             return
-        logger.debug(f'Current temp: {temp}C')
+        logger.debug('Current temp: %sC', temp)
         if not self.fan.is_active() and temp >= self.on_temp:
             logger.info('Temperature above on threshold — starting fan')
             self.fan.on()
-            self.last_state = True
         elif self.fan.is_active() and temp <= self.off_temp:
             logger.info('Temperature below off threshold — stopping fan')
             self.fan.off()
-            self.last_state = False
 
-    def run(self):
+    def run(self) -> None:
         logger.info('Starting misfans daemon')
-        while True:
+        while self._running:
             try:
                 self.check_once()
-            except Exception as e:
+            except Exception:
                 logger.exception('Error in main loop')
             time.sleep(self.interval)
 
+    def stop(self) -> None:
+        logger.info('Stopping misfans daemon')
+        self._running = False
+        try:
+            self.fan.off()
+        except Exception:
+            logger.exception('Error while stopping fan')
 
-def main():
-    logging.basicConfig(level=logging.INFO)
-    c = FanController()
-    c.run()
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+    controller = FanController()
+
+    def _handle(sig, frame):
+        logger.info('Received signal %s, shutting down', sig)
+        controller.stop()
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, _handle)
+    signal.signal(signal.SIGINT, _handle)
+
+    controller.run()
 
 
 if __name__ == '__main__':

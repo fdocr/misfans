@@ -1,11 +1,14 @@
 [project]
 name = "misfans"
 version = "0.1.0"
-description = "Raspberry Pi fan controller daemon (refactor)"
+description = "Raspberry Pi fan controller daemon"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
 
-[tool.poetry.dependencies]
-python = ">=3.10"
+[project.urls]
+Home = "https://github.com/fdocr/misfans"
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0","wheel"]
 build-backend = "setuptools.build_meta"
