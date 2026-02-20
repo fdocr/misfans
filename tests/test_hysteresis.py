@@ -1,7 +1,4 @@
-import tempfile
 from misfans.daemon import FanController
-from misfans.gpio_driver import FanDriver
-from misfans import config
 
 class FakeFan:
     def __init__(self):

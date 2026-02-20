@@ -1,5 +1,4 @@
-from misfans.config import Config, config
-import os
+from misfans.config import Config
 
 def test_config_defaults(monkeypatch):
     monkeypatch.delenv('FAN_PIN', raising=False)
