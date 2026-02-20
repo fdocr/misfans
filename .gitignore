@@ -1,1 +1,12 @@
-misfans.rb.pid
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+dist/
+.build/
+*.egg-info
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+
