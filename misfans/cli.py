@@ -2,7 +2,6 @@
 import argparse
 import subprocess
 import sys
-from pathlib import Path
 
 from .daemon import main as run_foreground
 
