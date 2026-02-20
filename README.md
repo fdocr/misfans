@@ -24,16 +24,7 @@ Quick start
 
 3. Run the installer as root (creates `misfans` user and service):
 
-   sudo ./installer/install.sh
-
-   Or use the one-liner installer (downloads and runs installer):
-
-   # using curl
-   curl -sL https://raw.githubusercontent.com/fdocr/misfans/main/installer/install.sh | sudo bash
-
-   # using wget
-   wget -qO- https://raw.githubusercontent.com/fdocr/misfans/main/installer/install.sh | sudo bash
-
+   git clone https://github.com/fdocr/misfans.git\   cd misfans\   sudo ./installer/install.sh
 4. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
 
    sudo systemctl restart misfans.service
