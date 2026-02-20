@@ -1,6 +1,3 @@
-import os
-
-
 def read_cpu_temp_c():
     try:
         with open('/sys/class/thermal/thermal_zone0/temp') as f:
@@ -12,6 +9,9 @@ def read_cpu_temp_c():
             import subprocess
             out = subprocess.check_output(['vcgencmd', 'measure_temp']).decode()
             # e.g. temp=48.0'C
-            return float(out.split('=')[1].split("'"[0])[0])
+            try:
+                return float(out.split('=')[1].split("'", 1)[0])
+            except Exception:
+                return None
         except Exception:
             return None
