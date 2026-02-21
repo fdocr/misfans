@@ -25,10 +25,16 @@ class FanController:
             return
         logger.debug('Current temp: %sC', temp)
         if not self.fan.is_active() and temp >= self.on_temp:
-            logger.info('Temperature above on threshold — starting fan')
+            logger.info(
+                'Current temperature %sC above on threshold — starting fan',
+                temp,
+            )
             self.fan.on()
         elif self.fan.is_active() and temp <= self.off_temp:
-            logger.info('Temperature below off threshold — stopping fan')
+            logger.info(
+                'Current temperature %sC below off threshold — stopping fan',
+                temp,
+            )
             self.fan.off()
 
     def run(self) -> None:
