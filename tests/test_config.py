@@ -8,5 +8,5 @@ def test_config_defaults(monkeypatch):
     c = Config()
     assert c.FAN_PIN == 4
     assert c.POLL_INTERVAL == 5.0
-    assert c.ON_TEMP == 55.0
+    assert c.ON_TEMP == 60.0
     assert c.OFF_TEMP == 50.0
