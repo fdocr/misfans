@@ -11,11 +11,11 @@ Fan wiring differs based on which fan you own, so everyone's setup might be a li
 
    `git clone https://github.com/fdocr/misfans.git && cd misfans`
 
-
 3. Run the installer as root (creates `misfans` user and service):
 
-   `sudo ./installer/install.sh`
-4. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
+   `sudo bin/install-misfans`
+
+5. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
 
    `sudo systemctl restart misfans.service`
 
