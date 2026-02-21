@@ -4,22 +4,7 @@ misfans is a small Python 3 package that runs as a systemd-friendly daemon to co
 
 ## Quick start
 
-Before you start, make sure you wire the fan as shown in the diagram below — use it to choose the correct pin numbers.
-
-Simple wiring (ASCII diagram):
-
-  +-----------+            +--------+    Fan
-  | Raspberry |            | MOSFET|   _______
-  | Pi Header |            | (N‑FET)|  |  Red  |
-  |           |            |        |--| Live  |--> to +5V (or fan +)
-  |  (5V) o---+------------+ Gate?? |    |       |
-  |  (GND) o----------------------|   |  Black |--> to GND
-  |  (GPIO) o---[resistor]--+-----+  |_______|
-  +-----------+             |       ^
-                            ( )     |
-                           [D] <-- flyback diode across fan (cathode to +5V)
-
-Make sure to use the correct pin numbers; consult the diagram above to identify the 5V, GND, and the GPIO pin you will configure as FAN_PIN.
+Fans commonly have a red (live) and black (ground) wire — if yours doesn't have loose wires attached, add them. Place the red wire on GPIO4 (BCM pin 4) and the black wire on a Pi ground pin (physical pin 6).
 
 1. On the target Pi, ensure Python 3.10+ is installed.
 2. Clone this repo:
