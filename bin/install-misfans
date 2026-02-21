@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Installer script for misfans
+# Usage: sudo ./install.sh [--dry-run] [--uninstall]
+
+SERVICE_NAME=misfans
+ENV_FILE=/etc/misfans.env
+SERVICE_FILE=/etc/systemd/system/misfans.service
+USER_NAME=misfans
+GROUP_NAME=gpio
+INSTALL_PREFIX=/opt/misfans
+VENV_DIR="$INSTALL_PREFIX/venv"
+
+DRY_RUN=0
+UNINSTALL=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run) DRY_RUN=1; shift;;
+    --uninstall) UNINSTALL=1; shift;;
+    -h|--help) echo "Usage: sudo $0 [--dry-run] [--uninstall]"; exit 0;;
+    *) echo "Unknown arg: $1"; exit 1;;
+  esac
+done
+
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root: sudo $0"
+  exit 1
+fi
+
+if [ "$UNINSTALL" -eq 1 ]; then
+  echo "Uninstalling $SERVICE_NAME"
+  systemctl stop $SERVICE_NAME.service || true
+  systemctl disable $SERVICE_NAME.service || true
+  rm -f "$SERVICE_FILE" || true
+  systemctl daemon-reload || true
+  userdel $USER_NAME || true
+  rm -rf "$INSTALL_PREFIX" || true
+  echo "Uninstalled"
+  exit 0
+fi
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "Dry run mode - no changes will be made"
+fi
+
+echo "Creating user $USER_NAME (if not exists)"
+if ! id -u $USER_NAME >/dev/null 2>&1; then
+  if [ "$DRY_RUN" -eq 0 ]; then
+    useradd --system --home /var/lib/misfans --shell /usr/sbin/nologin $USER_NAME
+  else
+    echo "Would run: useradd --system --home /var/lib/misfans --shell /usr/sbin/nologin $USER_NAME"
+  fi
+fi
+
+# Add to gpio group if exists
+if getent group $GROUP_NAME >/dev/null 2>&1; then
+  if [ "$DRY_RUN" -eq 0 ]; then
+    usermod -aG $GROUP_NAME $USER_NAME || true
+  else
+    echo "Would run: usermod -aG $GROUP_NAME $USER_NAME"
+  fi
+fi
+
+# Create install prefix
+if [ "$DRY_RUN" -eq 0 ]; then
+  mkdir -p "$INSTALL_PREFIX"
+  chown $USER_NAME:$USER_NAME "$INSTALL_PREFIX" || true
+else
+  echo "Would create $INSTALL_PREFIX and set owner"
+fi
+
+# Create virtualenv and install package
+if [ "$DRY_RUN" -eq 0 ]; then
+  if [ ! -d "$VENV_DIR" ]; then
+    python3 -m venv "$VENV_DIR"
+  fi
+  "$VENV_DIR/bin/pip" install --upgrade pip
+  # attempt editable install; fall back to requirements
+  "$VENV_DIR/bin/pip" install -e "$PWD" || "$VENV_DIR/bin/pip" install -r "$PWD/requirements.txt"
+else
+  echo "Would create venv at $VENV_DIR and install package"
+fi
+
+# Copy environment example if not present
+if [ ! -f "$ENV_FILE" ]; then
+  if [ "$DRY_RUN" -eq 0 ]; then
+    cat > "$ENV_FILE" <<EOF
+FAN_PIN=4
+POLL_INTERVAL=5
+ON_TEMP=60
+OFF_TEMP=50
+EOF
+    chmod 640 "$ENV_FILE"
+  else
+    echo "Would write default env to $ENV_FILE"
+  fi
+fi
+
+# Install systemd unit (adjust ExecStart to venv python)
+SCRIPT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+if [ "$DRY_RUN" -eq 0 ]; then
+  cp "$SCRIPT_DIR/systemd/misfans.service" "$SERVICE_FILE"
+  sed -i "s|ExecStart=.*|ExecStart=$VENV_DIR/bin/python -m misfans.daemon|" "$SERVICE_FILE"
+  chown root:root "$SERVICE_FILE"
+  chmod 644 "$SERVICE_FILE"
+  systemctl daemon-reload
+  systemctl enable --now $SERVICE_NAME.service
+else
+  echo "Would copy systemd unit and enable service"
+fi
+
+echo "Installed and started $SERVICE_NAME.service (or dry-run)"

@@ -1,31 +1,57 @@
-## misfans
+# misfans — Raspberry Pi fan controller
 
-rPi experiment to automate a fan accesory to switch between ON/OFF based on temperature measurements. 
+misfans is a small Python 3 package that runs as a systemd-friendly daemon to control a Raspberry Pi fan based on temperature.
 
-### Requirements
+## Quick start
 
-A ruby runtime installed. If new to ruby my personal recommendation is [RVM](https://rvm.io/): 
+Fan wiring differs based on which fan you own, so everyone's setup might be a little different. The default fan pin will be high (ON) when the fan needs to be running, and it will be low (OFF) when it doesn't. This project uses FAN_PIN=4 and refers to BCM GPIO 4 (this is physical pin 7) on common Raspberry Pi's layouts. Keep in mind you can update which pin you use for enabling your fan (you might need 5V so other components might be required). Feel free to create an issue if you need help or have a question on your specific setup.
+
+1. On the target Pi, ensure Python 3.10+ is installed.
+2. Clone this repo:
+
+   `git clone https://github.com/fdocr/misfans.git && cd misfans`
+
+
+3. Run the installer as root (creates `misfans` user and service):
+
+   `sudo ./installer/install.sh`
+4. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
+
+   `sudo systemctl restart misfans.service`
+
+## Configuration
+
+The installer creates `/etc/misfans.env` with sensible defaults:
 
 ```
-curl -sSL https://get.rvm.io | bash -s stable --ruby
+FAN_PIN=4
+POLL_INTERVAL=5
+ON_TEMP=60
+OFF_TEMP=50
 ```
 
-Also install Bundler: `gem install bundler`
+Change values as needed.
 
-### Installing
+## Development
 
-Clone the repo `git clone https://github.com/fdoxyz/misfans.git` and move into the directory (`cd misfans`).
+- Tests: `pytest -q`
+- Lint: `ruff check .`
+- If you don't have GPIO available, the `gpio_driver` falls back to a fake driver so tests and local runs won't require hardware.
 
-Logging is done directly to the file `/var/log/misfans.log`. Make sure the user running the deamon has write access to the file, if you need access or you're not sure first do `sudo touch /var/log/misfans.log` and then `chown <YOUR_USER> /var/log/misfans.log`.
 
-Install dependencies `bundle install` and start the daemon with `ruby daemon start`. misfans is using the [Daemons](https://github.com/thuehlinger/daemons) gem, so __from within this directory__ you can use `ruby daemon.rb status`, `ruby daemon.rb restart`, `ruby daemon.rb stop` to interact with the daemon.
 
-Once the daemon is running you should expect the fan to be triggered/enabled by a GPIO pin if the temperature rises above 72 'C and the fans will stop when the temperature falls below 55 'C.
+## Useful commands
 
-__To-Do (a lot):__
-- [ ] Use Daemons' argument feature for data
-- [ ] Organize in a proper class & make less of a script
-- [ ] Consider embedding in Docker container (ruby runtime dependency)
-- [ ] Test
+`python -m misfans.daemon` — Run the daemon in the foreground (debugging)
 
-If interested reach out with an issue or drop a PR :)
+`sudo systemctl status misfans.service` — Check the service status
+
+`sudo journalctl -u misfans.service -f` — Follow the service logs
+
+`sudo systemctl start misfans.service` — Start the service
+
+`sudo systemctl stop misfans.service` — Stop the service
+
+## License
+
+MIT
