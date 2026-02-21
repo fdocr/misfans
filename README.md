@@ -4,6 +4,10 @@ misfans is a small Python 3 package that runs as a systemd-friendly daemon to co
 
 ## Quick start
 
+Before you start: wiring the fan
+
+- The fan has two wires: red (live) and black (ground). Connect the black wire to a Raspberry Pi ground pin (GND). Connect the red wire to the GPIO pin you configured for FAN_PIN through a suitable transistor or MOSFET and flyback diode (do not connect the fan directly to a GPIO pin — use a proper low-side switch and separate 5V/3.3V power as required by your fan). If you're unsure, use a GPIO-capable relay board or an appropriate driver module. Double-check polarity and connections before powering the Pi.
+
 1. On the target Pi, ensure Python 3.10+ is installed.
 2. Clone this repo:
 
@@ -15,7 +19,7 @@ misfans is a small Python 3 package that runs as a systemd-friendly daemon to co
    `sudo ./installer/install.sh`
 4. Edit `/etc/misfans.env` to tune thresholds and pin numbers, then restart the service:
 
-   `sudo systemctl restart misfans.service`
+   `sudo systemctl.restart misfans.service`
 
 ## Configuration
 
