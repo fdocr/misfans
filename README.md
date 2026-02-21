@@ -50,6 +50,6 @@ Change values as needed.
 
 `sudo systemctl stop misfans.service` — Stop the service
 
-License
+## License
 
 MIT
