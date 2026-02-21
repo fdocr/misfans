@@ -36,21 +36,19 @@ Change values as needed.
 - Lint: `ruff check .`
 - If you don't have GPIO available, the `gpio_driver` falls back to a fake driver so tests and local runs won't require hardware.
 
-Why Python?
 
-Python is the standard scripting language on Raspberry Pi and many embedded devices. It has excellent library support (gpiozero, dotenv), makes mocking and testing hardware interactions straightforward, and is easy for contributors to read and extend.
-
-License
-
-MIT
 
 ## Useful commands
 
-- Install for development (editable): `python -m venv .venv && . .venv/bin/activate && pip install -e . && pip install -r requirements.txt`
-- Run daemon in foreground (for debugging): `python -m misfans.daemon`
-- Check service status: `sudo systemctl status misfans.service`
-- View logs: `sudo journalctl -u misfans.service -f`
-- Start/stop service: `sudo systemctl start|stop misfans.service`
+`python -m misfans.daemon` — Run the daemon in the foreground (debugging)
+
+`sudo systemctl status misfans.service` — Check the service status
+
+`sudo journalctl -u misfans.service -f` — Follow the service logs
+
+`sudo systemctl start misfans.service` — Start the service
+
+`sudo systemctl stop misfans.service` — Stop the service
 
 License
 

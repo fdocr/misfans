@@ -89,7 +89,7 @@ if [ ! -f "$ENV_FILE" ]; then
     cat > "$ENV_FILE" <<EOF
 FAN_PIN=4
 POLL_INTERVAL=5
-ON_TEMP=55
+ON_TEMP=60
 OFF_TEMP=50
 EOF
     chmod 640 "$ENV_FILE"
