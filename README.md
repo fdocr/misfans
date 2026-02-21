@@ -40,6 +40,19 @@ Change values as needed.
 
 
 
+## Update an existing installation
+
+If you already have a clone of this repository and installed the service previously, update your installation with these commands (replace /path/to/your/local/clone with the path to your checked‑out copy):
+
+```
+cd /path/to/your/local/clone
+git pull --ff-only
+sudo ./bin/install-misfans
+sudo systemctl restart misfans.service
+```
+
+This pulls the latest code into your local clone, runs the installer to install into /opt/misfans/venv (non-editable), and restarts the systemd service.
+
 ## Useful commands
 
 `python -m misfans.daemon` — Run the daemon in the foreground (debugging)
@@ -51,6 +64,8 @@ Change values as needed.
 `sudo systemctl start misfans.service` — Start the service
 
 `sudo systemctl stop misfans.service` — Stop the service
+
+`sudo ./bin/install-misfans --uninstall` — Uninstall the service and remove /opt/misfans (run from the installer clone or give full path)
 
 ## License
 
