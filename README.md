@@ -4,7 +4,7 @@ misfans is a small Python 3 package that runs as a systemd-friendly daemon to co
 
 ## Quick start
 
-Fans commonly have red (positive) and black (ground) wires. Connect the fan + (red) to the configured FAN_PIN (the default FAN_PIN=4 refers to BCM GPIO 4, which is physical pin 7). Connect the fan black wire to the Pi GND (physical pin 9 is a convenient GND).
+Fan wiring differs based on which fan you own, so everyone's setup might be a little different. The default fan pin will be high (ON) when the fan needs to be running, and it will be low (OFF) when it doesn't. This project uses FAN_PIN=4 and refers to BCM GPIO 4 (this is physical pin 7) on common Raspberry Pi's layouts. Keep in mind you can update which pin you use for enabling your fan (you might need 5V so other components might be required). Feel free to create an issue if you need help or have a question on your specific setup.
 
 1. On the target Pi, ensure Python 3.10+ is installed.
 2. Clone this repo:
