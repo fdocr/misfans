@@ -4,7 +4,7 @@ misfans is a small Python 3 package that runs as a systemd-friendly daemon to co
 
 ## Quick start
 
-Fans commonly have a red (live) and black (ground) wire — if yours doesn't have loose wires attached, add them. Place the red wire on GPIO4 (BCM pin 4) and the black wire on a Pi ground pin (physical pin 6).
+Fans commonly have red (positive) and black (ground) wires. Connect the fan + (red) to the configured FAN_PIN (the default FAN_PIN=4 refers to BCM GPIO 4, which is physical pin 7). Connect the fan black wire to the Pi GND (physical pin 9 is a convenient GND).
 
 1. On the target Pi, ensure Python 3.10+ is installed.
 2. Clone this repo:
