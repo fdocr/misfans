@@ -77,8 +77,8 @@ if [ "$DRY_RUN" -eq 0 ]; then
     python3 -m venv "$VENV_DIR"
   fi
   "$VENV_DIR/bin/pip" install --upgrade pip
-  # attempt editable install; fall back to requirements
-  "$VENV_DIR/bin/pip" install -e "$PWD" || "$VENV_DIR/bin/pip" install -r "$PWD/requirements.txt"
+  # install package into the venv (non-editable). fall back to requirements if needed
+  "$VENV_DIR/bin/pip" install . || "$VENV_DIR/bin/pip" install -r "$PWD/requirements.txt"
 else
   echo "Would create venv at $VENV_DIR and install package"
 fi
